@@ -8,6 +8,50 @@ If you can use one of the many [Firebase client libraries](https://firebase.goog
 
 Please email api@ycombinator.com if you find any bugs.
 
+## Hosting the dashboard locally or on a server
+
+The repository now includes a standalone `index.html` dashboard for GPU economics. Because it is a static page with no backend requirements, you can host it on any static file server:
+
+1. **Serve locally for testing**
+   ```bash
+   cd /path/to/repo
+   python -m http.server 8000
+   ```
+   Then open http://localhost:8000/index.html in your browser.
+
+2. **Host on a simple web server** (nginx, Apache, etc.)
+   - Copy `index.html` (and any additional static assets you add) into the server's document root.
+   - Ensure the server allows static file delivery; no special routing is needed.
+
+3. **Deploy to static hosting**
+   - Push the repository to GitHub and enable GitHub Pages with the root (`/`) as the publishing source, or
+   - Upload `index.html` to a platform like Netlify, Vercel, S3 + CloudFront, or any CDN bucket configured for static website hosting.
+
+No environment variables or build steps are required—serving the file as-is is sufficient.
+
+### Run a lightweight Node server (optional)
+
+If you prefer to serve the dashboard with Node.js (useful for container images or platform-as-a-service deploys), a minimal HTTP server is included:
+
+```bash
+node server.js
+# Optionally specify a port
+PORT=3000 node server.js
+```
+
+This serves the repository root (including `index.html`) over HTTP and only responds to GET/HEAD requests.
+
+### Deploy with Docker
+
+Build and run a tiny Docker image that serves the static dashboard via the bundled Node server:
+
+```bash
+docker build -t gpu-dashboard .
+docker run -p 8080:8080 gpu-dashboard
+```
+
+Once running, visit `http://localhost:8080` to view the dashboard.
+
 ## URI and Versioning
 
 We hope to improve the API over time. The changes won't always be backward compatible, so we're going to use versioning. This first iteration will have URIs prefixed with `https://hacker-news.firebaseio.com/v0/` and is structured as described below. There is currently no rate limit.
