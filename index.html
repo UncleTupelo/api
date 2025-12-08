@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GPU Econ">
+    <meta name="theme-color" content="#111">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23111' width='100' height='100'/><text y='65' x='50%25' text-anchor='middle' font-size='50' fill='white'>GPU</text></svg>">
+    <title>GPU Economics | Lucid Research</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#fafafa;--card:#fff;--border:#e5e5e5;--text:#171717;--muted:#737373;--accent:#171717}
+        body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.4}
+        .wrap{max-width:1200px;margin:0 auto;padding:12px}
+        header{padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:16px}
+        header h1{font-size:16px;font-weight:600}
+        header p{color:var(--muted);font-size:11px;margin-top:2px}
+        .install-bar{background:#f5f5f5;border:1px solid var(--border);padding:10px 14px;margin-bottom:12px;display:none;justify-content:space-between;align-items:center;font-size:12px}
+        .install-bar.show{display:flex}
+        .install-bar button{background:var(--accent);color:#fff;border:0;padding:6px 14px;font-size:11px;cursor:pointer}
+        nav{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:16px}
+        nav button{background:none;border:none;padding:10px 16px;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+        nav button:hover{color:var(--text)}
+        nav button.on{color:var(--text);border-bottom-color:var(--accent)}
+        section{display:none;background:var(--card);border:1px solid var(--border);padding:20px}
+        section.on{display:block}
+        section h2{font-size:13px;font-weight:600;margin-bottom:14px}
+        .tools{margin-bottom:14px;display:flex;gap:8px}
+        .tools button{background:none;border:1px solid var(--border);padding:6px 12px;font-size:11px;cursor:pointer}
+        .tools button:hover{background:#f5f5f5}
+        table{width:100%;border-collapse:collapse;font-size:12px}
+        th{text-align:left;padding:8px 10px;background:#f5f5f5;border-bottom:1px solid var(--border);font-weight:500;color:var(--muted);white-space:nowrap}
+        td{padding:8px 10px;border-bottom:1px solid #f0f0f0}
+        tr:hover td{background:#fafafa}
+        .num{text-align:right;font-variant-numeric:tabular-nums}
+        .chart-box{height:280px;margin:20px 0}
+        .row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .form{background:#f9f9f9;border:1px solid var(--border);padding:16px}
+        .form h3{font-size:12px;font-weight:600;margin-bottom:12px}
+        .field{margin-bottom:10px}
+        .field label{display:block;font-size:11px;color:var(--muted);margin-bottom:3px}
+        .field input,.field select{width:100%;padding:8px;border:1px solid var(--border);font-size:12px;background:#fff}
+        .field input:focus,.field select:focus{outline:none;border-color:#999}
+        .btn{background:var(--accent);color:#fff;border:0;padding:10px 18px;font-size:12px;cursor:pointer;width:100%}
+        .results{background:#fff;border:1px solid var(--border);padding:16px}
+        .results h3{font-size:12px;font-weight:600;margin-bottom:10px;color:var(--muted)}
+        .line{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:12px}
+        .line:last-child{border:0}
+        .line .val{font-weight:600}
+        .line .val.big{font-size:14px}
+        .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px}
+        .card{background:#fff;border:1px solid var(--border);padding:14px}
+        .card .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+        .card .val{font-size:22px;font-weight:600;margin-top:2px}
+        .card .sub{font-size:11px;color:var(--muted)}
+        .tag{display:inline-block;padding:2px 6px;font-size:10px;background:#f0f0f0}
+        .tag.hi{background:#d1fae5;color:#065f46}
+        .tag.md{background:#fef3c7;color:#92400e}
+        .tag.lo{background:#fee2e2;color:#991b1b}
+        @media(max-width:768px){.row{grid-template-columns:1fr}nav{flex-wrap:wrap}nav button{padding:8px 12px}}
+        @media(display-mode:standalone){.install-bar{display:none!important}}
+        .tbl-wrap{overflow-x:auto}
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div id="ib" class="install-bar"><span>Install app for quick access</span><button onclick="doInstall()">Install</button></div>
+    <header><h1>GPU Datacenter Economics</h1><p>Lucid Capital Markets · Equity Research</p></header>
+    <nav>
+        <button class="on" data-t="specs">Specs</button>
+        <button data-t="cloud">Cloud Pricing</button>
+        <button data-t="tco">TCO</button>
+        <button data-t="train">Training</button>
+        <button data-t="infer">Inference</button>
+        <button data-t="mkt">Market</button>
+    </nav>
+
+    <section id="specs" class="on">
+        <h2>GPU Specifications</h2>
+        <div class="tools"><button onclick="exp('tbl1','gpu_specs.csv')">Export CSV</button><button onclick="cpy('tbl1')">Copy</button></div>
+        <div class="tbl-wrap"><table id="tbl1"><thead><tr><th>Architecture</th><th>Year</th><th class="num">FP16 TF</th><th class="num">FP8 TF</th><th class="num">Mem</th><th class="num">BW</th><th class="num">TDP</th><th class="num">Price</th><th class="num">Cloud $/hr</th><th class="num">Tok/s</th></tr></thead><tbody id="tb1"></tbody></table></div>
+        <div class="chart-box"><canvas id="c1"></canvas></div>
+    </section>
+
+    <section id="cloud">
+        <h2>Cloud Provider Pricing</h2>
+        <div class="tools"><button onclick="exp('tbl2','cloud_pricing.csv')">Export CSV</button></div>
+        <div class="tbl-wrap"><table id="tbl2"><thead><tr><th>Provider</th><th>GPU</th><th class="num">$/hr</th><th>Config</th><th>Avail</th></tr></thead><tbody id="tb2"></tbody></table></div>
+        <div class="chart-box"><canvas id="c2"></canvas></div>
+    </section>
+
+    <section id="tco">
+        <h2>TCO Calculator</h2>
+        <div class="row">
+            <div class="form">
+                <h3>Configuration</h3>
+                <div class="field"><label>GPU Model</label><select id="f1"><option>H100</option><option>H200</option><option>GB200</option><option>B200</option><option>A100</option></select></div>
+                <div class="field"><label>GPU Count</label><input type="number" id="f2" value="100"></div>
+                <div class="field"><label>GPU Price ($)</label><input type="number" id="f3" value="30000"></div>
+                <div class="field"><label>Power ($/kWh)</label><input type="number" id="f4" value="0.087" step="0.001"></div>
+                <div class="field"><label>PUE</label><input type="number" id="f5" value="1.25" step="0.05"></div>
+                <div class="field"><label>Utilization %</label><input type="number" id="f6" value="85"></div>
+                <div class="field"><label>Contract (Yrs)</label><input type="number" id="f7" value="4"></div>
+                <div class="field"><label>Target IRR %</label><input type="number" id="f8" value="25"></div>
+                <button class="btn" onclick="calcTCO()">Calculate</button>
+            </div>
+            <div id="r1" class="results"></div>
+        </div>
+    </section>
+
+    <section id="train">
+        <h2>Training Economics</h2>
+        <div class="row">
+            <div class="form">
+                <h3>Configuration</h3>
+                <div class="field"><label>Model Size</label><select id="t1"><option>1B</option><option selected>7B</option><option>13B</option><option>70B</option><option>180B</option><option>405B</option></select></div>
+                <div class="field"><label>GPU Type</label><select id="t2"><option>A100</option><option selected>H100</option><option>H200</option><option>B200</option></select></div>
+                <div class="field"><label>GPU Count</label><input type="number" id="t3" value="8"></div>
+                <div class="field"><label>GPU $/hr</label><input type="number" id="t4" value="2.40" step="0.01"></div>
+                <div class="field"><label>Precision</label><select id="t5"><option>FP16</option><option>FP8</option><option>FP4</option></select></div>
+                <button class="btn" onclick="calcTrain()">Calculate</button>
+            </div>
+            <div id="r2" class="results"></div>
+        </div>
+        <div class="tbl-wrap" style="margin-top:20px"><table><thead><tr><th>Model</th><th class="num">A100 hrs</th><th class="num">H100 hrs</th><th class="num">A100 $</th><th class="num">H100 $</th><th class="num">Savings</th></tr></thead><tbody id="tb3"></tbody></table></div>
+    </section>
+
+    <section id="infer">
+        <h2>Inference Economics</h2>
+        <div class="row">
+            <div class="form">
+                <h3>Configuration</h3>
+                <div class="field"><label>Model</label><select id="i1"><option selected>Llama 7B</option><option>Llama 13B</option><option>Llama 70B</option><option>GPT-3.5 175B</option><option>Mixtral 8x7B</option></select></div>
+                <div class="field"><label>GPU/Precision</label><select id="i2"><option>A100</option><option>H100 FP16</option><option selected>H100 FP8</option><option>B200 FP8</option><option>B200 FP4</option></select></div>
+                <div class="field"><label>Monthly Tokens (M)</label><input type="number" id="i3" value="1000"></div>
+                <div class="field"><label>GPU $/hr</label><input type="number" id="i4" value="2.40" step="0.01"></div>
+                <button class="btn" onclick="calcInfer()">Calculate</button>
+            </div>
+            <div id="r3" class="results"></div>
+        </div>
+        <div class="tbl-wrap" style="margin-top:20px"><table><thead><tr><th>Model</th><th class="num">Mem</th><th class="num">A100</th><th class="num">H100 16</th><th class="num">H100 8</th><th class="num">B200 8</th><th class="num">B200 4</th></tr></thead><tbody id="tb4"></tbody></table></div>
+    </section>
+
+    <section id="mkt">
+        <h2>Market Forecasts</h2>
+        <div class="cards">
+            <div class="card"><div class="lbl">2025 GPU Rental</div><div class="val">$4.96B</div><div class="sub">+10.2% YoY</div></div>
+            <div class="card"><div class="lbl">2025 Cloud AI</div><div class="val">$102B</div><div class="sub">+30.3% YoY</div></div>
+            <div class="card"><div class="lbl">2032 GPU Rental</div><div class="val">$33.9B</div><div class="sub">37.8% CAGR</div></div>
+        </div>
+        <div class="chart-box" style="height:340px"><canvas id="c3"></canvas></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Year</th><th class="num">GPU Rental</th><th class="num">Cloud AI</th><th class="num">AI Infra</th></tr></thead><tbody id="tb5"></tbody></table></div>
+    </section>
+</div>
+
+<script>
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('ib').classList.add('show')});
+function doInstall(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('ib').classList.remove('show')})}}
+
+const GPU=[
+{a:'A100 80GB',y:2020,f16:312,f8:0,m:80,bw:2.0,w:400,pL:10,pH:14,cL:1.29,cH:1.79,t:130},
+{a:'H100 80GB',y:2022,f16:1979,f8:3958,m:80,bw:3.35,w:700,pL:25,pH:35,cL:2.40,cH:3.50,t:280},
+{a:'H200 141GB',y:2024,f16:1979,f8:3958,m:141,bw:4.8,w:700,pL:30,pH:40,cL:1.90,cH:2.50,t:320},
+{a:'B100',y:2024,f16:3500,f8:7000,m:192,bw:8.0,w:700,pL:30,pH:40,cL:3.00,cH:4.00,t:500},
+{a:'B200',y:2024,f16:4500,f8:9000,m:192,bw:8.0,w:1000,pL:30,pH:40,cL:3.79,cH:6.25,t:700},
+{a:'GB200',y:2024,f16:5000,f8:10000,m:384,bw:16.0,w:1400,pL:60,pH:70,cL:3.20,cH:8.00,t:900},
+{a:'VR200',y:2026,f16:8500,f8:17000,m:288,bw:12.0,w:1800,pL:70,pH:90,cL:5.00,cH:12.00,t:1500},
+{a:'VR300',y:2027,f16:17000,f8:34000,m:1024,bw:24.0,w:3600,pL:140,pH:180,cL:10.00,cH:25.00,t:3000}
+];
+const CLD=[
+{p:'AWS P5',g:'H100',r:3.90,c:'8x',av:'High'},{p:'GCP A3',g:'H100',r:3.00,c:'1x',av:'High'},
+{p:'Azure NC',g:'H100',r:6.98,c:'1x',av:'High'},{p:'Lambda',g:'H100',r:2.99,c:'8x',av:'Med'},
+{p:'RunPod',g:'H100',r:2.39,c:'1x',av:'High'},{p:'CoreWeave',g:'H100',r:6.16,c:'8x',av:'Med'},
+{p:'Hyperstack',g:'H100',r:2.40,c:'1x',av:'High'},{p:'WhiteFiber',g:'H200',r:1.90,c:'1x',av:'Med'},
+{p:'WhiteFiber',g:'GB200',r:3.20,c:'1x',av:'Low'}
+];
+const TRN=[
+{s:'1B',a:200,h:80,ac:258,hc:192,f8:1,f4:1},{s:'7B',a:5000,h:2100,ac:6450,hc:5040,f8:1,f4:1},
+{s:'13B',a:15000,h:6250,ac:19350,hc:15000,f8:1,f4:1},{s:'70B',a:100000,h:42000,ac:129000,hc:100800,f8:1.5,f4:2},
+{s:'180B',a:300000,h:120000,ac:387000,hc:288000,f8:1.5,f4:2.5},{s:'405B',a:800000,h:320000,ac:1032000,hc:768000,f8:1.5,f4:3}
+];
+const INF=[
+{m:'Llama 7B',a:130,h16:280,h8:500,b8:700,b4:1400,mem:14},
+{m:'Llama 13B',a:100,h16:220,h8:400,b8:550,b4:1100,mem:26},
+{m:'Llama 70B',a:40,h16:85,h8:160,b8:240,b4:480,mem:140},
+{m:'GPT-3.5 175B',a:20,h16:45,h8:85,b8:120,b4:240,mem:350},
+{m:'Mixtral 8x7B',a:60,h16:130,h8:240,b8:350,b4:700,mem:90}
+];
+const MKT=[
+{y:2023,gr:3.34,ca:60,ai:70},{y:2024,gr:4.50,ca:78.36,ai:87.6},{y:2025,gr:4.96,ca:102.09,ai:110},
+{y:2026,gr:6.80,ca:135,ai:138},{y:2027,gr:9.50,ca:178,ai:172},{y:2028,gr:13.20,ca:235,ai:197.64},
+{y:2030,gr:19.80,ca:380,ai:260},{y:2032,gr:33.91,ca:589.22,ai:350}
+];
+
+function init(){
+const tb1=document.getElementById('tb1');
+GPU.forEach(g=>{tb1.innerHTML+=`<tr><td>${g.a}</td><td class="num">${g.y}</td><td class="num">${g.f16.toLocaleString()}</td><td class="num">${g.f8.toLocaleString()}</td><td class="num">${g.m}GB</td><td class="num">${g.bw}</td><td class="num">${g.w}W</td><td class="num">$${g.pL}-${g.pH}k</td><td class="num">$${g.cL.toFixed(2)}-${g.cH.toFixed(2)}</td><td class="num">${g.t.toLocaleString()}</td></tr>`});
+
+const tb2=document.getElementById('tb2');
+CLD.forEach(c=>{const cls=c.av==='High'?'hi':c.av==='Med'?'md':'lo';tb2.innerHTML+=`<tr><td>${c.p}</td><td>${c.g}</td><td class="num">$${c.r.toFixed(2)}</td><td>${c.c}</td><td><span class="tag ${cls}">${c.av}</span></td></tr>`});
+
+const tb3=document.getElementById('tb3');
+TRN.forEach(t=>{const sv=((t.ac-t.hc)/t.ac*100).toFixed(0);tb3.innerHTML+=`<tr><td>${t.s}</td><td class="num">${t.a.toLocaleString()}</td><td class="num">${t.h.toLocaleString()}</td><td class="num">$${t.ac.toLocaleString()}</td><td class="num">$${t.hc.toLocaleString()}</td><td class="num">${sv}%</td></tr>`});
+
+const tb4=document.getElementById('tb4');
+INF.forEach(i=>{tb4.innerHTML+=`<tr><td>${i.m}</td><td class="num">${i.mem}</td><td class="num">${i.a}</td><td class="num">${i.h16}</td><td class="num">${i.h8}</td><td class="num">${i.b8}</td><td class="num">${i.b4}</td></tr>`});
+
+const tb5=document.getElementById('tb5');
+MKT.forEach(m=>{tb5.innerHTML+=`<tr><td>${m.y}</td><td class="num">$${m.gr.toFixed(2)}B</td><td class="num">$${m.ca.toFixed(1)}B</td><td class="num">$${m.ai.toFixed(1)}B</td></tr>`});
+
+charts();
+document.querySelectorAll('nav button').forEach(b=>{b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));document.querySelectorAll('section').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.getElementById(b.dataset.t).classList.add('on')}});
+}
+
+function charts(){
+new Chart(document.getElementById('c1'),{type:'bar',data:{labels:GPU.map(g=>g.a),datasets:[{label:'FP16 TFLOPS',data:GPU.map(g=>g.f16),backgroundColor:'#333'},{label:'Memory GB',data:GPU.map(g=>g.m),backgroundColor:'#999',yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}},scales:{y:{beginAtZero:true,grid:{color:'#eee'},ticks:{font:{size:10}}},y1:{beginAtZero:true,position:'right',grid:{drawOnChartArea:false},ticks:{font:{size:10}}}}}});
+
+new Chart(document.getElementById('c2'),{type:'bar',data:{labels:CLD.map(c=>c.p),datasets:[{label:'$/GPU-hr',data:CLD.map(c=>c.r),backgroundColor:CLD.map(c=>c.r<3?'#555':c.r<5?'#888':'#bbb')}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#eee'},ticks:{font:{size:10}}}}}});
+
+new Chart(document.getElementById('c3'),{type:'line',data:{labels:MKT.map(m=>m.y),datasets:[{label:'GPU Rental $B',data:MKT.map(m=>m.gr),borderColor:'#333',backgroundColor:'rgba(0,0,0,0.05)',fill:true,tension:0.3},{label:'Cloud AI $B',data:MKT.map(m=>m.ca),borderColor:'#666',backgroundColor:'rgba(0,0,0,0.03)',fill:true,tension:0.3},{label:'AI Infra $B',data:MKT.map(m=>m.ai),borderColor:'#999',backgroundColor:'rgba(0,0,0,0.02)',fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}},scales:{y:{beginAtZero:true,grid:{color:'#eee'},ticks:{font:{size:10}}}}}});
+}
+
+function calcTCO(){
+const mod=document.getElementById('f1').value,cnt=+document.getElementById('f2').value,prc=+document.getElementById('f3').value,pwr=+document.getElementById('f4').value,pue=+document.getElementById('f5').value,util=+document.getElementById('f6').value/100,yrs=+document.getElementById('f7').value,irr=+document.getElementById('f8').value/100;
+const sp={H100:{w:700,o:575},H200:{w:700,o:575},GB200:{w:1400,o:575},B200:{w:1000,o:575},A100:{w:400,o:575}},s=sp[mod];
+const kw=(s.w+s.o)*cnt/1000,cap=cnt*prc+cnt*2000,apwr=kw*pue*pwr*8760,aop=apwr+cap*0.05+(cnt/100)*150000;
+const tot=cap+aop*yrs,req=tot*(1+irr),hrs=cnt*8760*util*yrs,rate=req/hrs;
+const mr={H100:2.40,H200:1.90,GB200:3.20,B200:3.79,A100:1.29}[mod],cmp=(mr/rate*100).toFixed(0);
+document.getElementById('r1').innerHTML=`<h3>Results</h3><div class="line"><span>CapEx</span><span class="val">$${cap.toLocaleString()}</span></div><div class="line"><span>Annual Power</span><span class="val">$${apwr.toLocaleString(undefined,{maximumFractionDigits:0})}</span></div><div class="line"><span>Annual OpEx</span><span class="val">$${aop.toLocaleString(undefined,{maximumFractionDigits:0})}</span></div><div class="line"><span>Power Draw</span><span class="val">${kw.toFixed(0)} kW</span></div><div class="line"><span>Req Rate (${(irr*100).toFixed(0)}% IRR)</span><span class="val big">$${rate.toFixed(2)}/hr</span></div><div class="line"><span>Market Rate</span><span class="val">$${mr.toFixed(2)}/hr</span></div><div class="line"><span>vs Market</span><span class="val">${cmp}%</span></div>`;
+}
+
+function calcTrain(){
+const sz=document.getElementById('t1').value,gpu=document.getElementById('t2').value,cnt=+document.getElementById('t3').value,cst=+document.getElementById('t4').value,pr=document.getElementById('t5').value;
+const d=TRN.find(t=>t.s===sz);let hrs=gpu==='A100'?d.a:d.h;if(pr==='FP8')hrs/=d.f8;if(pr==='FP4')hrs/=d.f4;
+const wall=hrs/cnt/24,tot=hrs*cst;
+document.getElementById('r2').innerHTML=`<h3>Results</h3><div class="line"><span>Model</span><span class="val">${sz}</span></div><div class="line"><span>Config</span><span class="val">${cnt}x ${gpu} ${pr}</span></div><div class="line"><span>GPU-Hours</span><span class="val">${hrs.toLocaleString(undefined,{maximumFractionDigits:0})}</span></div><div class="line"><span>Wall Time</span><span class="val">${wall.toFixed(1)} days</span></div><div class="line"><span>Total Cost</span><span class="val big">$${tot.toLocaleString(undefined,{maximumFractionDigits:0})}</span></div>`;
+}
+
+function calcInfer(){
+const mod=document.getElementById('i1').value,gpu=document.getElementById('i2').value,tokM=+document.getElementById('i3').value,cst=+document.getElementById('i4').value;
+const d=INF.find(i=>i.m===mod);
+const tps=gpu==='A100'?d.a:gpu==='H100 FP16'?d.h16:gpu==='H100 FP8'?d.h8:gpu==='B200 FP8'?d.b8:d.b4;
+const hrs=(tokM*1e6/tps)/3600,tot=hrs*cst,perM=tot/tokM,maxM=(tps*3600*24*30)/1e6;
+document.getElementById('r3').innerHTML=`<h3>Results</h3><div class="line"><span>Throughput</span><span class="val">${tps.toLocaleString()} tok/s</span></div><div class="line"><span>GPU Hours</span><span class="val">${hrs.toLocaleString(undefined,{maximumFractionDigits:0})}</span></div><div class="line"><span>Monthly Cost</span><span class="val big">$${tot.toLocaleString(undefined,{maximumFractionDigits:0})}</span></div><div class="line"><span>$/M Tokens</span><span class="val big">$${perM.toFixed(2)}</span></div><div class="line"><span>Max Capacity</span><span class="val">${maxM.toLocaleString(undefined,{maximumFractionDigits:0})}M/mo</span></div>`;
+}
+
+function exp(id,fn){const t=document.getElementById(id);let csv=[];for(let r of t.rows){let row=[];for(let c of r.cells)row.push('"'+c.textContent.replace(/"/g,'""')+'"');csv.push(row.join(','))}const b=new Blob([csv.join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fn;a.click()}
+function cpy(id){const t=document.getElementById(id);const rng=document.createRange();rng.selectNode(t);window.getSelection().removeAllRanges();window.getSelection().addRange(rng);document.execCommand('copy');window.getSelection().removeAllRanges();alert('Copied')}
+
+window.onload=init;
+</script>
+</body>
+</html>
