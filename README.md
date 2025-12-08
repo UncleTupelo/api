@@ -29,6 +29,29 @@ The repository now includes a standalone `index.html` dashboard for GPU economic
 
 No environment variables or build steps are required—serving the file as-is is sufficient.
 
+### Run a lightweight Node server (optional)
+
+If you prefer to serve the dashboard with Node.js (useful for container images or platform-as-a-service deploys), a minimal HTTP server is included:
+
+```bash
+node server.js
+# Optionally specify a port
+PORT=3000 node server.js
+```
+
+This serves the repository root (including `index.html`) over HTTP and only responds to GET/HEAD requests.
+
+### Deploy with Docker
+
+Build and run a tiny Docker image that serves the static dashboard via the bundled Node server:
+
+```bash
+docker build -t gpu-dashboard .
+docker run -p 8080:8080 gpu-dashboard
+```
+
+Once running, visit `http://localhost:8080` to view the dashboard.
+
 ## URI and Versioning
 
 We hope to improve the API over time. The changes won't always be backward compatible, so we're going to use versioning. This first iteration will have URIs prefixed with `https://hacker-news.firebaseio.com/v0/` and is structured as described below. There is currently no rate limit.
