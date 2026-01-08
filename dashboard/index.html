@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPU Datacenter Economics | Lucid Research</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+    <script src="app.js" type="module" defer></script>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__text">
+        <p class="eyebrow">Lucid Research • AI/HPC Coverage</p>
+        <h1>GPU Datacenter Economics</h1>
+        <p class="lede">
+          Operator-grade dashboard for GPU supply, cloud pricing, TCO targets, and LLM training & inference unit economics.
+          Point the data source at GitHub, Notion, or any HTTPS JSON feed to keep numbers fresh without rebuilding the page.
+        </p>
+        <div class="cta-row">
+          <button class="button" id="refresh-button">Refresh data</button>
+          <a class="button button--ghost" id="open-source" href="#" target="_blank" rel="noreferrer">Open data source</a>
+        </div>
+        <p class="data-hint" id="data-hint"></p>
+      </div>
+      <div class="hero__badge">
+        <div class="badge__label">Ready for custom domain</div>
+        <div class="badge__title">joef-agent26.xyz</div>
+        <div class="badge__meta">Deploy on GitHub Pages / Netlify</div>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="panel panel--wide" id="summary-panel">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Snapshot</p>
+            <h2>Key deltas in the last few weeks</h2>
+          </div>
+          <div class="pill" id="last-updated">Updated: —</div>
+        </div>
+        <div class="stat-grid" id="stat-grid"></div>
+      </section>
+
+      <section class="panel" id="gpu-panel">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Silicon</p>
+            <h2>GPU Architecture Comparison</h2>
+          </div>
+          <div class="pill">Exports: CSV • Clipboard</div>
+        </div>
+        <div class="table-wrapper">
+          <table id="gpu-table"></table>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="gpu-chart" height="320"></canvas>
+        </div>
+      </section>
+
+      <section class="panel" id="cloud-panel">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Cloud</p>
+            <h2>Provider Pricing</h2>
+          </div>
+          <button class="button button--ghost" id="export-cloud">Export CSV</button>
+        </div>
+        <div class="table-wrapper">
+          <table id="cloud-table"></table>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="cloud-chart" height="280"></canvas>
+        </div>
+      </section>
+
+      <section class="panel panel--wide" id="tco-panel">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">CapEx & OpEx</p>
+            <h2>TCO Calculator</h2>
+            <p class="muted">Quickly see the hourly rate needed to hit an IRR target, with PUE and utilization baked in.</p>
+          </div>
+          <button class="button" id="run-tco">Calculate</button>
+        </div>
+        <div class="form-grid" id="tco-form"></div>
+        <div class="result" id="tco-result"></div>
+      </section>
+
+      <section class="panel" id="training-panel">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Training</p>
+            <h2>LLM Training Economics</h2>
+          </div>
+          <button class="button" id="run-training">Recalculate</button>
+        </div>
+        <div class="form-grid" id="training-form"></div>
+        <div class="result" id="training-result"></div>
+        <div class="table-wrapper">
+          <table id="training-table"></table>
+        </div>
+      </section>
+
+      <section class="panel" id="inference-panel">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Inference</p>
+            <h2>LLM Inference Economics</h2>
+          </div>
+          <button class="button" id="run-inference">Recalculate</button>
+        </div>
+        <div class="form-grid" id="inference-form"></div>
+        <div class="result" id="inference-result"></div>
+        <div class="table-wrapper">
+          <table id="inference-table"></table>
+        </div>
+      </section>
+
+      <section class="panel panel--wide" id="market-panel">
+        <div class="panel__header">
+          <div>
+            <p class="eyebrow">Macro</p>
+            <h2>Market Forecasts</h2>
+          </div>
+          <div class="pill">Source: Lucid Research</div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="market-chart" height="340"></canvas>
+        </div>
+        <div class="table-wrapper">
+          <table id="market-table"></table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>
+        <strong>Sync strategy</strong>
+        <p class="muted">Serve this page from GitHub Pages/Netlify; point <code>?dataUrl=</code> to a GitHub raw JSON or a Notion proxy feed. Auto-refresh every 30 minutes by default.</p>
+      </div>
+      <div>
+        <strong>Deployment</strong>
+        <p class="muted">Single-page, static assets only. Works on joef-agent26.xyz with DNS pointing at your host.</p>
+      </div>
+      <div>
+        <strong>Next steps</strong>
+        <p class="muted">Add CI to push the latest JSON from Notion into GitHub nightly, or connect a serverless Notion relay.</p>
+      </div>
+    </footer>
+  </body>
+</html>
