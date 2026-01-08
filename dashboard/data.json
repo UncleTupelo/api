@@ -1,0 +1,54 @@
+{
+  "metadata": {
+    "title": "GPU Datacenter Economics Dashboard",
+    "subtitle": "Comprehensive AI/HPC Infrastructure Analysis & TCO Modeling",
+    "updatedAt": "2024-10-01"
+  },
+  "gpuSpecifications": [
+    {"architecture": "Ampere (A100 80GB)", "launchYear": 2020, "fp16Tflops": 312, "fp8Tflops": 0, "fp4Petaflops": 0, "memoryGb": 80, "memoryBandwidthTbs": 2.0, "tdpWatts": 400, "purchasePriceLow": 10000, "purchasePriceHigh": 14000, "cloudRentalLow": 1.29, "cloudRentalHigh": 1.79, "tokensPerSec": 130, "trainingSpeedupVsA100": 1.0, "nvlinkBandwidthTbs": 0.6},
+    {"architecture": "Hopper (H100 80GB)", "launchYear": 2022, "fp16Tflops": 1979, "fp8Tflops": 3958, "fp4Petaflops": 0, "memoryGb": 80, "memoryBandwidthTbs": 3.35, "tdpWatts": 700, "purchasePriceLow": 25000, "purchasePriceHigh": 35000, "cloudRentalLow": 2.4, "cloudRentalHigh": 3.5, "tokensPerSec": 280, "trainingSpeedupVsA100": 2.4, "nvlinkBandwidthTbs": 0.9},
+    {"architecture": "Hopper (H200 141GB)", "launchYear": 2024, "fp16Tflops": 1979, "fp8Tflops": 3958, "fp4Petaflops": 0, "memoryGb": 141, "memoryBandwidthTbs": 4.8, "tdpWatts": 700, "purchasePriceLow": 30000, "purchasePriceHigh": 40000, "cloudRentalLow": 1.9, "cloudRentalHigh": 2.5, "tokensPerSec": 320, "trainingSpeedupVsA100": 2.6, "nvlinkBandwidthTbs": 0.9},
+    {"architecture": "Blackwell (B100)", "launchYear": 2024, "fp16Tflops": 3500, "fp8Tflops": 7000, "fp4Petaflops": 14, "memoryGb": 192, "memoryBandwidthTbs": 8.0, "tdpWatts": 700, "purchasePriceLow": 30000, "purchasePriceHigh": 40000, "cloudRentalLow": 3.0, "cloudRentalHigh": 4.0, "tokensPerSec": 500, "trainingSpeedupVsA100": 4.0, "nvlinkBandwidthTbs": 1.8},
+    {"architecture": "Blackwell (B200)", "launchYear": 2024, "fp16Tflops": 4500, "fp8Tflops": 9000, "fp4Petaflops": 20, "memoryGb": 192, "memoryBandwidthTbs": 8.0, "tdpWatts": 1000, "purchasePriceLow": 30000, "purchasePriceHigh": 40000, "cloudRentalLow": 3.79, "cloudRentalHigh": 6.25, "tokensPerSec": 700, "trainingSpeedupVsA100": 5.0, "nvlinkBandwidthTbs": 1.8},
+    {"architecture": "Blackwell (GB200)", "launchYear": 2024, "fp16Tflops": 5000, "fp8Tflops": 10000, "fp4Petaflops": 20, "memoryGb": 384, "memoryBandwidthTbs": 16.0, "tdpWatts": 1400, "purchasePriceLow": 60000, "purchasePriceHigh": 70000, "cloudRentalLow": 3.2, "cloudRentalHigh": 8.0, "tokensPerSec": 900, "trainingSpeedupVsA100": 6.0, "nvlinkBandwidthTbs": 3.6},
+    {"architecture": "Rubin (VR200)", "launchYear": 2026, "fp16Tflops": 8500, "fp8Tflops": 17000, "fp4Petaflops": 50, "memoryGb": 288, "memoryBandwidthTbs": 12.0, "tdpWatts": 1800, "purchasePriceLow": 70000, "purchasePriceHigh": 90000, "cloudRentalLow": 5.0, "cloudRentalHigh": 12.0, "tokensPerSec": 1500, "trainingSpeedupVsA100": 10.0, "nvlinkBandwidthTbs": 7.2},
+    {"architecture": "Rubin Ultra (VR300)", "launchYear": 2027, "fp16Tflops": 17000, "fp8Tflops": 34000, "fp4Petaflops": 100, "memoryGb": 1024, "memoryBandwidthTbs": 24.0, "tdpWatts": 3600, "purchasePriceLow": 140000, "purchasePriceHigh": 180000, "cloudRentalLow": 10.0, "cloudRentalHigh": 25.0, "tokensPerSec": 3000, "trainingSpeedupVsA100": 20.0, "nvlinkBandwidthTbs": 14.4}
+  ],
+  "cloudPricing": [
+    {"provider": "AWS P5", "gpuType": "H100", "pricePerGpuHour": 3.9, "config": "8xGPU", "availability": "High"},
+    {"provider": "GCP A3", "gpuType": "H100", "pricePerGpuHour": 3.0, "config": "1xGPU", "availability": "High"},
+    {"provider": "Azure NC H100", "gpuType": "H100", "pricePerGpuHour": 6.98, "config": "1xGPU", "availability": "High"},
+    {"provider": "Lambda Labs", "gpuType": "H100", "pricePerGpuHour": 2.99, "config": "8xGPU", "availability": "Medium"},
+    {"provider": "RunPod", "gpuType": "H100", "pricePerGpuHour": 2.39, "config": "1xGPU", "availability": "High"},
+    {"provider": "CoreWeave", "gpuType": "H100", "pricePerGpuHour": 6.16, "config": "8xGPU", "availability": "Medium"},
+    {"provider": "Paperspace", "gpuType": "H100", "pricePerGpuHour": 5.95, "config": "1xGPU", "availability": "Medium"},
+    {"provider": "Hyperstack", "gpuType": "H100", "pricePerGpuHour": 2.4, "config": "1xGPU", "availability": "High"},
+    {"provider": "WhiteFiber H200", "gpuType": "H200", "pricePerGpuHour": 1.9, "config": "1xGPU", "availability": "Medium"},
+    {"provider": "WhiteFiber GB200", "gpuType": "GB200", "pricePerGpuHour": 3.2, "config": "1xGPU", "availability": "Low"}
+  ],
+  "trainingCosts": [
+    {"modelSize": "1B", "trainingGpuHoursA100": 200, "trainingGpuHoursH100": 80, "costA100CloudLow": 258, "costH100CloudLow": 192, "fp8Speedup": 1.0, "fp4SpeedupBlackwell": 1.0},
+    {"modelSize": "7B", "trainingGpuHoursA100": 5000, "trainingGpuHoursH100": 2100, "costA100CloudLow": 6450, "costH100CloudLow": 5040, "fp8Speedup": 1.0, "fp4SpeedupBlackwell": 1.0},
+    {"modelSize": "13B", "trainingGpuHoursA100": 15000, "trainingGpuHoursH100": 6250, "costA100CloudLow": 19350, "costH100CloudLow": 15000, "fp8Speedup": 1.0, "fp4SpeedupBlackwell": 1.0},
+    {"modelSize": "70B", "trainingGpuHoursA100": 100000, "trainingGpuHoursH100": 42000, "costA100CloudLow": 129000, "costH100CloudLow": 100800, "fp8Speedup": 1.5, "fp4SpeedupBlackwell": 2.0},
+    {"modelSize": "180B", "trainingGpuHoursA100": 300000, "trainingGpuHoursH100": 120000, "costA100CloudLow": 387000, "costH100CloudLow": 288000, "fp8Speedup": 1.5, "fp4SpeedupBlackwell": 2.5},
+    {"modelSize": "405B", "trainingGpuHoursA100": 800000, "trainingGpuHoursH100": 320000, "costA100CloudLow": 1032000, "costH100CloudLow": 768000, "fp8Speedup": 1.5, "fp4SpeedupBlackwell": 3.0}
+  ],
+  "inferencePerformance": [
+    {"model": "Llama 7B", "tokensPerSecondA100": 130, "tokensPerSecondH100Fp16": 280, "tokensPerSecondH100Fp8": 500, "tokensPerSecondB200Fp8": 700, "tokensPerSecondB200Fp4": 1400, "memoryRequiredGb": 14, "costPerMillionTokensH100": 1.19},
+    {"model": "Llama 13B", "tokensPerSecondA100": 100, "tokensPerSecondH100Fp16": 220, "tokensPerSecondH100Fp8": 400, "tokensPerSecondB200Fp8": 550, "tokensPerSecondB200Fp4": 1100, "memoryRequiredGb": 26, "costPerMillionTokensH100": 1.54},
+    {"model": "Llama 70B", "tokensPerSecondA100": 40, "tokensPerSecondH100Fp16": 85, "tokensPerSecondH100Fp8": 160, "tokensPerSecondB200Fp8": 240, "tokensPerSecondB200Fp4": 480, "memoryRequiredGb": 140, "costPerMillionTokensH100": 4.24},
+    {"model": "GPT-3.5 175B", "tokensPerSecondA100": 20, "tokensPerSecondH100Fp16": 45, "tokensPerSecondH100Fp8": 85, "tokensPerSecondB200Fp8": 120, "tokensPerSecondB200Fp4": 240, "memoryRequiredGb": 350, "costPerMillionTokensH100": 8.0},
+    {"model": "Mixtral 8x7B", "tokensPerSecondA100": 60, "tokensPerSecondH100Fp16": 130, "tokensPerSecondH100Fp8": 240, "tokensPerSecondB200Fp8": 350, "tokensPerSecondB200Fp4": 700, "memoryRequiredGb": 90, "costPerMillionTokensH100": 2.77}
+  ],
+  "marketForecast": [
+    {"year": 2023, "gpuRentalMarketB": 3.34, "cloudAiMarketB": 60.0, "aiInfrastructureMarketB": 70.0},
+    {"year": 2024, "gpuRentalMarketB": 4.5, "cloudAiMarketB": 78.36, "aiInfrastructureMarketB": 87.6},
+    {"year": 2025, "gpuRentalMarketB": 4.96, "cloudAiMarketB": 102.09, "aiInfrastructureMarketB": 110.0},
+    {"year": 2026, "gpuRentalMarketB": 6.8, "cloudAiMarketB": 135.0, "aiInfrastructureMarketB": 138.0},
+    {"year": 2027, "gpuRentalMarketB": 9.5, "cloudAiMarketB": 178.0, "aiInfrastructureMarketB": 172.0},
+    {"year": 2028, "gpuRentalMarketB": 13.2, "cloudAiMarketB": 235.0, "aiInfrastructureMarketB": 197.64},
+    {"year": 2030, "gpuRentalMarketB": 19.8, "cloudAiMarketB": 380.0, "aiInfrastructureMarketB": 260.0},
+    {"year": 2032, "gpuRentalMarketB": 33.91, "cloudAiMarketB": 589.22, "aiInfrastructureMarketB": 350.0}
+  ]
+}
